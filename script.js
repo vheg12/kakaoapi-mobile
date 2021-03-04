@@ -13,7 +13,7 @@ function getlist(){
         {
             type:"get",
             url:url,
-            headers:{"Authorization":"KakaoAK "},
+            headers:{"Authorization":"KakaoAK 83241b51b26798a25aa23b3f331ba439"},
             data:{"query":query, "size":size},
             dataType:"json",
             success:function(data){
