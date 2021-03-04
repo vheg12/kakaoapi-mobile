@@ -1,0 +1,82 @@
+<html>
+    <head>
+        <title>도서검색</title>
+        <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
+        <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+        <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> 
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>    
+        <style>
+        </style>  
+    </head>
+    <body>
+        <div data-role="page">
+            <div data-role="header"><h1>도서검색 모바일</h1></div>
+            <div data-role="content">
+                <div><input type="text" id="txtQuery" value="자바"></div>
+                <br><br>
+                <ul data-role="listview" id="list" data-theme="a"></ul>
+                <script id="temp" type="text/x-handlebars-template">
+                {{#each documents}}
+                <li><a href="{{url}}"><img src="{{thumbnail}}">{{{title}}}</a></li>
+                {{/each}}
+                </script> 
+                <br><br>
+                <input type="button" id="btn" value="더보기" width="150px">
+            </div>
+            <br>
+            <div data-role="footer"></div>           
+        </div>
+
+        <div data-role="page" id="sub">
+            <div data-role="header">
+                <h1>도서검색 모바일</h1>
+                <a href=""></a>
+
+            </div>
+            <div data-role="content">
+            </div>
+            <br>
+            <div data-role="footer"></div>           
+        </div>
+
+    </body>
+    <script>
+
+        var size=5;
+
+        getlist();
+
+        $("#txtQuery").on("keydown",function (e){
+            if(e.keyCode==13){
+                getlist();
+            }
+        });
+
+        function getlist(){
+            var query=$("#txtQuery").val();
+
+            $.ajax(
+                {
+                    type:"get",
+                    url:"https://dapi.kakao.com/v3/search/book?target=title",
+                    headers:{"Authorization":"KakaoAK 83241b51b26798a25aa23b3f331ba439"},
+                    data:{"query":query, "size":size},
+                    dataType:"json",
+                    success:function(data){
+                        var temp=Handlebars.compile($("#temp").html());
+                        $("#list").html(temp(data)).listview("refresh");
+                    }
+                }
+            );
+        }
+
+        $("#btn").on("click",function (e){
+            size=size+5;
+            getlist();
+        })
+        $("#list").on("click","a",function (e){
+
+        });
+
+    </script>
+</html>
