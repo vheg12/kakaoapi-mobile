@@ -1,12 +1,13 @@
 <html>
     <head>
-        <title>도서검색</title>
+        <title>지역검색</title>
         <link rel="stylesheet" href="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
         <script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
         <script src="https://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script> 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/3.0.1/handlebars.js"></script>    
         <link rel="preconnect" href="https://fonts.gstatic.com">
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+        <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=83241b51b26798a25aa23b3f331ba439"></script>
         <style>
             *{
                 font-family: 'Noto Sans KR', sans-serif;
@@ -17,15 +18,15 @@
         <div data-role="page" id="main">
             <div data-role="header">
                 <a href="index.html" target="_self" data-icon="home" data-iconpos="notext"></a>
-                <h1>도서검색 모바일</h1>
+                <h1>지역검색 모바일</h1>
             </div>
             <div data-role="content">
-                <div><input type="text" id="txtQuery" value="자바"></div>
+                <div><input type="text" id="txtQuery" value="미추홀구"></div>
                 <br><br>
                 <ul data-role="listview" id="list" data-theme="a"></ul>
                 <script id="temp" type="text/x-handlebars-template">
                 {{#each documents}}
-                <li><a href="#sub" title="{{title}}" authors="{{authors}}" contents="{{contents}}"><img src="{{thumbnail}}">{{{title}}}</a></li>
+                <li><a href="#sub" x="{{x}}" y="{{y}}" contents="{{contents}}">{{{place_name}}}</a></li>
                 {{/each}}
                 </script> 
                 <br><br>
@@ -38,16 +39,11 @@
         <div data-role="page" id="sub">
             <div data-role="header">
                 <a href="index.html" target="_self" data-icon="home" data-iconpos="notext"></a>
-                <h1>도서검색 모바일</h1>
+                <h1>지역검색 모바일</h1>
                 <a href="#main" data-icon="back" data-iconpos="notext" ></a>
             </div>
             <div data-role="content">
-                <div>
-                    <img src="" id="image" width="120" height="150" style="margin-bottom:10px;">
-                    <div id="title"></div>
-                    <div id="authors"><b></b></div>
-                    <p id="contents" style="text-align:left;"></p>
-                </div>
+                <div id="map" style="width:500px;height:400px;"></div>
             </div>
             <br>
             <div data-role="footer"></div>           
@@ -56,20 +52,36 @@
     </body>
     <script>
 
-        var url="https://dapi.kakao.com/v3/search/book?target=title";
+        var url="https://dapi.kakao.com/v2/local/search/keyword.json";
         var size=5;
 
+
         $("#list").on("click", "a", function(){
-        var title=$(this).attr("title");
-        var authors=$(this).attr("authors");
-        var contents=$(this).attr("contents");
-        var price=$(this).attr("price");
-        var image=$(this).find("img").attr("src");
-        $("#image").attr("src", image);
-        $("#title").html(title);
-        $("#authors").html("<b>" + authors + " (" + price + "원)" + "</b>");
-        $("#contents").html(contents);
+            var x=$(this).attr("x"); //this=리스트
+            var y=$(this).attr("y");
+            getMap(x, y);
+            
+            
         });
+
+        function getMap(x, y){
+        var container = document.getElementById('map');
+          var options = {
+         center: new kakao.maps.LatLng(y, x),
+         level: 3
+      };
+      
+         var map = new kakao.maps.Map(container, options);
+
+         map.relayout();
+         
+
+        }
+
+        function relayout() {    
+        
+        map.relayout();
+        };
 
     </script>
     <script src="script.js"></script>
